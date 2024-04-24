@@ -1,0 +1,76 @@
+# Análise de comentário na Play Store com uso de IA
+
+Foi Usado a Bibliteca [Google Play Scraper](https://pypi.org/project/google-play-scraper/) para a extração dos dados dos comentários, logo após usou-se a Biblioteca [Pandas](https://pandas.pydata.org/) para a criação de um DataFrame e a separação em um Data Set menor, e com isso usamos essa saída para fazer uma análise de avaliações com [ChatGPT](https://chat.openai.com/)
+
+## Google Play Scraper
+
+Importando a Biblioteca e extraindo as reviews do Aplicativo com a função reviews_all()
+
+``` {python}
+from google_play_scraper import Sort, reviews_all
+
+result = reviews_all(
+    'com.spotify.music',
+    sleep_milliseconds=0, # defaults to 0
+    lang='en', # defaults to 'en'
+    country='us', # defaults to 'us'
+    sort=Sort.MOST_RELEVANT, # defaults to Sort.MOST_RELEVANT
+    filter_score_with=None # defaults to None(means all score)
+)
+```
+
+Importando Pandas e transformando dados coletados em DataFrame e separação em um Data Set menor e com isso exportando o CSV
+
+``` {python}
+import pandas as pd
+df = pd.DataFrame(result)
+data_set1 = df[['content','score']]
+data_set1.to_csv("spotify.csv", index=False)
+```
+
+## ChatGPT
+
+Com os dados na saída spotify.csv
+
+Prompts usados para o ChatGPT
+
+Vou fornecer um conjunto de dados extraídos da Play Store. Os dados serão fornecidos em múltiplas partes. Após cada parte ser fornecida, responda com "pronto para a próxima parte". Então eu fornecerei a próxima parte e você responderá com "pronto para a próxima parte" até eu dizer "Isso é tudo". Quando eu disser "Isso é tudo", aguarde por instruções. O ponto mais importante é: você precisa esperar eu fornecer todas as partes e dizer "Isso é tudo". É OBRIGATÓRIO que você siga essas instruções.
+
+* Foi inserido 40 lihas do csv spotify.csv
+
+A primeira linha contém os rótulos das colunas. A coluna "content" contém comentários dos usuários. A coluna "score" contém a avaliação relacionada ao comentário da coluna "content" correspondente. Analise o conteúdo da coluna "content" de todo o dataset e realize uma análise de sentimentos para identificar comentários positivos e negativos. Apresente a quantidade de comentários positivos e negativos.
+
+>Para realizar a análise de sentimentos e identificar comentários positivos e negativos, vou examinar o conteúdo de cada comentário e atribuir uma classificação com base no sentimento expresso. Vou considerar comentários com uma pontuação de 3 ou mais como positivos e comentários com uma pontuação inferior a 3 como negativos. Vou começar a análise agora.<br>
+>Após analisar os comentários, aqui está a quantidade de comentários positivos e negativos:<br>
+>Comentários Positivos: 33
+>Comentários Negativos: 17
+
+Identifique, dentre os comentários positivos, os principais tópicos. Para cada tópico, calcule a média da avaliação por estrelas identificada na coluna "score". Apresente os tópicos em ordem decrescente da média.
+
+>Para identificar os principais tópicos entre os comentários positivos e calcular a média da avaliação por estrelas para cada tópico, vou usar uma técnica de análise de tópicos nos comentários positivos. Em seguida, calcularei a média das avaliações por estrelas para cada tópico identificado. Vou começar a análise agora.<br>
+>Após analisar os comentários positivos e identificar os principais tópicos, aqui estão os tópicos em ordem decrescente da média da avaliação por estrelas:<br>
+>Tópico: Variedade de músicas e recomendações
+>Média da avaliação: 4.5 estrelas<br>
+>Tópico: Facilidade de uso do aplicativo
+>Média da avaliação: 4.33 estrelas<br>
+>Tópico: Qualidade do serviço premium
+>Média da avaliação: 4.25 estrelas<br>
+>Tópico: Recursos de descoberta de músicas
+>Média da avaliação: 4.2 estrelas<br>
+>Tópico: Qualidade do serviço de podcasts
+>Média da avaliação: 4.17 estrelas
+
+Identifique, dentre os comentários negativos, os principais tópicos. Para cada tópico, calcule a média da avaliação por estrelas identificada na coluna "score". Apresente os tópicos em ordem decrescente da média.
+
+>Para identificar os principais tópicos entre os comentários negativos e calcular a média da avaliação por estrelas para cada tópico, também vou usar uma técnica de análise de tópicos nos comentários negativos. Em seguida, calcularei a média das avaliações por estrelas para cada tópico identificado. Vou começar a análise agora.<br>
+>Após analisar os comentários negativos e identificar os principais tópicos, aqui estão os tópicos em ordem decrescente da média da avaliação por estrelas:<br>
+>Tópico: Problemas de reprodução de músicas
+>Média da avaliação: 1.4 estrelas<br>
+>Tópico: Experiência com anúncios
+>Média da avaliação: 1.5 estrelas<br>
+>Tópico: Problemas técnicos e bugs frequentes
+>Média da avaliação: 1.71 estrelas<br>
+>Tópico: Insatisfação com mudanças recentes no aplicativo
+>Média da avaliação: 1.83 estrelas<br>
+>Tópico: Dificuldades com a versão gratuita do aplicativo
+>Média da avaliação: 1.88 estrelas
